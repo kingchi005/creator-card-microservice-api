@@ -1,32 +1,10 @@
 const { expect } = require('chai');
 const { ulid } = require('@app-core/randomness');
 const CreatorCard = require('@app/repository/creator-card');
-const { DatabaseModel, createConnection } = require('@app-core/mongoose');
 const { faker } = require('@faker-js/faker');
 
 describe('CreatorCard Repository - Core Retrieval & Creation Tests', function () {
   this.timeout(10000);
-
-  before(async () => {
-    const dbUri = process.env.MONGODB_URI;
-    if (!dbUri) {
-      throw new Error('MONGODB_URI environment variable is not set');
-    }
-
-    const { connection } = DatabaseModel;
-
-    if (!connection || connection.readyState === 0) {
-      await createConnection({ uri: dbUri });
-    }
-  });
-
-  after(async () => {
-    const { connection } = DatabaseModel;
-    if (connection && connection.readyState !== 0) {
-      await connection.close();
-    }
-    process.exit(0);
-  });
 
   describe('create', () => {
     it('should successfully create a new creator card', async () => {

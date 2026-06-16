@@ -11,6 +11,7 @@
   "scripts": {
     "test": "set USE_MOCK_MODEL=0 && mocha --recursive --require dotenv/config",
     "prepare": "husky",
+    "lint": "npx lint-staged --no-stash",
     "commitlint": "commitlint --edit",
     "sync-envs": "node sync-env-files"
   },

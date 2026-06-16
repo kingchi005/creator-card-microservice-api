@@ -43,7 +43,7 @@ async function getPublicCard(serviceData) {
     }
     result = card;
   } catch (error) {
-    appLogger.errorX(error, 'get-public-card-error');
+    appLogger.error(error, 'get-public-card-error');
   }
 
   return result;
