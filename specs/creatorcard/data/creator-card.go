@@ -1,5 +1,3 @@
-import ../commons.go
-
 CreatorCard {
   _id string<isUnique|indexed> // Unique identifier (ULID), serialized as 'id' in API responses
   title string<minLength:3|maxLength:100> // Name of the creator card (e.g., "George Cooks")
@@ -24,4 +22,7 @@ CreatorCard {
   status string(draft|published) // Card status. Drafts are omitted from public endpoints
   access_type string(public|private) // Access control type (defaults to public)
   access_code? string<length:6> // Required alphanumeric access code if access_type is private
+  created number // Timestamp of creation
+  updated number // Timestamp of last update
+  deleted? number // Timestamp of soft deletion (if paranoid mode enabled)
 }

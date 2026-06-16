@@ -1,0 +1,3 @@
+const getCreatorCardSpec = `root {
+  
+}`;
