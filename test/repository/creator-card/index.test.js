@@ -30,8 +30,9 @@ describe('CreatorCard Repository - Core Retrieval & Creation Tests', function ()
 
   describe('create', () => {
     it('should successfully create a new creator card', async () => {
-      const randomTitle = faker.string.alpha({ length: faker.number.int({ min: 5, max: 50 }) });
-
+      const randomTitle = faker.commerce.productName({
+        length: faker.number.int({ min: 5, max: 50 }),
+      });
       const cleanSlugStr =
         `${faker.helpers.slugify(randomTitle).substring(0, 20)}-${ulid().substring(0, 10)}`.toLowerCase();
 
@@ -82,8 +83,7 @@ describe('CreatorCard Repository - Core Retrieval & Creation Tests', function ()
   });
   describe('findOne', () => {
     it('should find a single card matching target criteria constraints', async () => {
-      const generatedSlug = faker.string.alpha({ length: 10 }).toLowerCase();
-
+      const generatedSlug = `valid-find-one-target-${faker.word.sample({ length: 6 }).toLowerCase()}`;
       await CreatorCard.create({
         title: 'Valid FindOne Target',
         description: 'Biographical info goes here.',
@@ -115,7 +115,7 @@ describe('CreatorCard Repository - Core Retrieval & Creation Tests', function ()
       // Seed dual elements belonging to the same creator entity pointer reference
       await CreatorCard.create({
         title: 'Card Set Alpha',
-        slug: `alpha-${faker.string.alpha({ length: 6 }).toLowerCase()}`,
+        slug: `alpha-${faker.word.words({ count: 2 }).toLowerCase()}`,
         creator_reference: commonRef,
         status: 'published',
         access_type: 'public',
@@ -124,7 +124,7 @@ describe('CreatorCard Repository - Core Retrieval & Creation Tests', function ()
 
       await CreatorCard.create({
         title: 'Card Set Beta',
-        slug: `beta-${faker.string.alpha({ length: 6 }).toLowerCase()}`,
+        slug: `beta-${faker.word.words({ count: 2 }).toLowerCase()}`,
         creator_reference: commonRef,
         status: 'published',
         access_type: 'public',
@@ -139,6 +139,48 @@ describe('CreatorCard Repository - Core Retrieval & Creation Tests', function ()
       expect(result).to.be.an('array');
       expect(result.length).to.be.at.least(2);
       expect(result[0].creator_reference).to.equal(commonRef);
+    });
+  });
+
+  describe('updateOne', () => {
+    it('should update a creator card field by query', async () => {
+      const created = await CreatorCard.create({
+        title: 'Pre-Update Title',
+        slug: `pre-update-title-${faker.word.sample({ length: 6 }).toLowerCase()}`,
+        creator_reference: faker.string.alphanumeric({ length: 20 }),
+        status: 'draft',
+        access_type: 'public',
+        service_rates: { currency: 'NGN', rates: [] },
+      });
+
+      await CreatorCard.updateOne({
+        query: { _id: created._id },
+        updateValues: { status: 'published', title: 'Post-Update Title' },
+      });
+
+      const updated = await CreatorCard.findOne({ query: { _id: created._id } });
+
+      expect(updated.status).to.equal('published');
+      expect(updated.title).to.equal('Post-Update Title');
+    });
+  });
+
+  describe('deleteOne', () => {
+    it('should soft-delete a creator card by query', async () => {
+      const created = await CreatorCard.create({
+        title: 'To Be Deleted',
+        slug: `to-be-deleted-${faker.word.adverb({ length: 6 }).toLowerCase()}`,
+        creator_reference: faker.string.alphanumeric({ length: 20 }),
+        status: 'draft',
+        access_type: 'public',
+        service_rates: { currency: 'NGN', rates: [] },
+      });
+
+      await CreatorCard.deleteOne({ query: { _id: created._id } });
+
+      const result = await CreatorCard.findOne({ query: { _id: created._id } });
+
+      expect(result).to.equal(null);
     });
   });
 });
