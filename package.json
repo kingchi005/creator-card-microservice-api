@@ -9,7 +9,7 @@
     "url": "profold-be-api-1"
   },
   "scripts": {
-    "test": "set USE_MOCK_MODEL=1 && mocha --recursive --require dotenv/config",
+    "test": "set USE_MOCK_MODEL=0 && mocha --recursive --require dotenv/config",
     "prepare": "husky",
     "commitlint": "commitlint --edit",
     "sync-envs": "node sync-env-files"
@@ -67,6 +67,7 @@
     "@app-core/mock-server": "file:core/mock-server",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "@faker-js/faker": "^10.4.0",
     "chai": "^4.3.7",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",

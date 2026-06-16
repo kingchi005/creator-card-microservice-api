@@ -1,4 +1,4 @@
-const creatorCard = require('./creator-card');
+const CreatorCard = require('./creator-card');
 const Notification = require('./notification');
 
-module.exports = { Notification, creatorCard };
+module.exports = { Notification, CreatorCard };
