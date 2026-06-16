@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/nodemon.json",
+  "watch": [
+    "messages/**/*",
+    "endpoint/**/*",
+    "middleware/**/*",
+    "model/**/*",
+    "repository/**/*",
+    "spec/**/*",
+    "workers/**/*",
+    ".env"
+  ],
+  "ext": "js",
+  "exec": "node bootstrap.js"
+}
