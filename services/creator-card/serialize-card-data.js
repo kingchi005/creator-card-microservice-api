@@ -24,10 +24,9 @@
 /**
  * Transforms a raw Mongoose document into a clean data transfer object (DTO)
  * @param {Object} document - The raw Mongoose document instance
- * @param {boolean} [includeTimestamps] - Whether to include (created, updated, deleted) in the DTO (default: false)
  * @returns {Object} Clean, serialized object
  */
-function serializeCreatorCard(document, includeTimestamps = false) {
+function serializeCreatorCard(document) {
   const rawObj = document.toObject ? document.toObject() : { ...document };
 
   return {
@@ -53,9 +52,9 @@ function serializeCreatorCard(document, includeTimestamps = false) {
 
     status: rawObj.status,
     access_type: rawObj.access_type,
-    ...(!includeTimestamps
-      ? {}
-      : { created: rawObj.created, updated: rawObj.updated, deleted: rawObj.deleted }),
+    created: rawObj.created,
+    updated: rawObj.updated,
+    deleted: rawObj.deleted,
   };
 }
 

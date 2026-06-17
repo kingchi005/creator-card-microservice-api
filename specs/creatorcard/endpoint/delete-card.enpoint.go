@@ -1,19 +1,19 @@
-GetPublicCardRequest { // Retrieves a single Creator Card by its slug
+DeleteCardRequest { // Deletes a single Creator Card by its slug
   path /creator-cards
-  method GET
+  method DELETE
 
 	query {
-		access_code string
+		creator_reference string<length:20>
 	}
 
 	params { 
 		slug string<minLength:5|maxLength:50>
 	}
-
+  
   response.ok {
 		http.code 200
 		status success,
-		message "Card Retrieved Successfully.",
+		message "Card Deleted Successfully.",
 		data {
 			id string
 			title string
@@ -34,6 +34,7 @@ GetPublicCardRequest { // Retrieves a single Creator Card by its slug
 			}
 			status published
 			access_type public
+			access_code? null
 			created number
 			updated number
 			deleted? number

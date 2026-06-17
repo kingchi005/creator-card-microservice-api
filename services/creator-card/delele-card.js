@@ -33,7 +33,7 @@ async function deleteCard(serviceData) {
       updateValues: { deleted: Date.now() },
     });
 
-    result = serializeCreatorCard(card, true);
+    result = serializeCreatorCard(card);
   } catch (error) {
     appLogger.error(error, 'delete-card-error');
     throw error;

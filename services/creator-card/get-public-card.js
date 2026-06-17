@@ -47,7 +47,7 @@ async function getPublicCard(serviceData) {
       }
     }
 
-    result = serializeCreatorCard(card, true);
+    result = serializeCreatorCard(card);
   } catch (error) {
     appLogger.error(error, 'get-public-card-error');
     throw error;
