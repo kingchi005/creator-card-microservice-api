@@ -54,8 +54,11 @@ async function createCard(serviceData) {
         CreatorCardMessages.ACCESS_CODE_REQUIRED_ON_TYPE_PRIVATE,
         ERROR_CODE.ACCESS_CODE_REQUIRED_ON_TYPE_PRIVATE
       );
-    } else {
-      validData.access_code = null;
+    } else if (validData.access_type === 'public' && validData.access_code) {
+      throwAppError(
+        CreatorCardMessages.ACCESS_CODE_NOT_ALLOWED_ON_TYPE_PUBLIC,
+        ERROR_CODE.ACCESS_CODE_NOT_ALLOWED_ON_TYPE_PUBLIC
+      );
     }
 
     const card = await CreatorCard.create(validData);
