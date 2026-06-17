@@ -1,10 +1,29 @@
 const { expect } = require('chai');
 const { faker } = require('@faker-js/faker');
+const { DatabaseModel, createConnection } = require('@app-core/mongoose');
 const CreatorCard = require('@app/repository/creator-card');
 const getPublicCard = require('@app/services/creator-card/get-public-card');
 
 describe('getPublicCard Service', function () {
   this.timeout(10000);
+
+  before(async () => {
+    const dbUri = process.env.MONGODB_URI;
+    if (!dbUri) throw new Error('MONGODB_URI environment variable is not set');
+
+    const { connection } = DatabaseModel;
+    if (!connection || connection.readyState === 0) {
+      await createConnection({ uri: dbUri });
+    }
+  });
+
+  after(async () => {
+    const { connection } = DatabaseModel;
+    if (connection && connection.readyState !== 0) {
+      await connection.close();
+    }
+    process.exit(0);
+  });
 
   const makeCard = (overrides = {}) => ({
     title: faker.string.alpha({ length: 10 }),
@@ -12,6 +31,7 @@ describe('getPublicCard Service', function () {
     creator_reference: faker.string.alphanumeric({ length: 20 }),
     status: 'published',
     access_type: 'public',
+    links: [],
     service_rates: { currency: 'USD', rates: [] },
     ...overrides,
   });
@@ -26,33 +46,45 @@ describe('getPublicCard Service', function () {
     expect(result.slug).to.equal(slug);
   });
 
-  it('should return a private card when correct access code is provided', async () => {
+  it('should return a private card when correct access_code is provided', async () => {
     const slug = faker.string.alpha({ length: 8 }).toLowerCase();
     const accessCode = faker.string.alphanumeric({ length: 6, casing: 'upper' });
     await CreatorCard.create(makeCard({ slug, access_type: 'private', access_code: accessCode }));
 
-    const result = await getPublicCard({ slug, accessCode });
+    const result = await getPublicCard({ slug, access_code: accessCode });
 
     expect(result).to.not.equal(null);
     expect(result.slug).to.equal(slug);
   });
 
-  it('should return undefined when card does not exist', async () => {
-    const result = await getPublicCard({ slug: 'nonexistentslug' });
+  it('should throw when card does not exist', async () => {
+    let error;
+    try {
+      await getPublicCard({ slug: 'nonexistentslug' });
+    } catch (err) {
+      error = err;
+    }
 
-    expect(result).to.equal(undefined);
+    expect(error).to.not.equal(undefined);
+    expect(error.message).to.equal('Creator card not found');
   });
 
-  it('should return undefined when card is in draft status', async () => {
+  it('should throw when card is in draft status', async () => {
     const slug = faker.string.alpha({ length: 8 }).toLowerCase();
     await CreatorCard.create(makeCard({ slug, status: 'draft' }));
 
-    const result = await getPublicCard({ slug });
+    let error;
+    try {
+      await getPublicCard({ slug });
+    } catch (err) {
+      error = err;
+    }
 
-    expect(result).to.equal(undefined);
+    expect(error).to.not.equal(undefined);
+    expect(error.message).to.equal('Creator card not found');
   });
 
-  it('should return undefined when private card is accessed without access code', async () => {
+  it('should throw when private card is accessed without access_code', async () => {
     const slug = faker.string.alpha({ length: 8 }).toLowerCase();
     await CreatorCard.create(
       makeCard({
@@ -62,41 +94,51 @@ describe('getPublicCard Service', function () {
       })
     );
 
-    const result = await getPublicCard({ slug });
+    let error;
+    try {
+      await getPublicCard({ slug });
+    } catch (err) {
+      error = err;
+    }
 
-    expect(result).to.equal(undefined);
+    expect(error).to.not.equal(undefined);
+    expect(error.message).to.equal('This card is private. An access code is required');
   });
 
-  it('should return undefined when an incorrect access code is provided', async () => {
+  it('should throw when an incorrect access_code is provided', async () => {
     const slug = faker.string.alpha({ length: 8 }).toLowerCase();
     await CreatorCard.create(makeCard({ slug, access_type: 'private', access_code: 'ABCDEF' }));
 
-    const result = await getPublicCard({ slug, accessCode: 'XXXXXX' });
+    let error;
+    try {
+      await getPublicCard({ slug, access_code: 'XXXXXX' });
+    } catch (err) {
+      error = err;
+    }
 
-    expect(result).to.equal(undefined);
+    expect(error).to.not.equal(undefined);
+    expect(error.message).to.equal('Invalid access code');
   });
 
   it('should throw a validation error when slug is too short', async () => {
     let error;
     try {
-      await getPublicCard({ slug: 'abc' }); // less than minLength:5
+      await getPublicCard({ slug: 'abc' });
     } catch (err) {
       error = err;
     }
 
     expect(error).to.not.equal(undefined);
-    expect(error).to.not.equal(null);
   });
 
-  it('should throw a validation error when accessCode is the wrong length', async () => {
+  it('should throw a validation error when access_code is the wrong length', async () => {
     let error;
     try {
-      await getPublicCard({ slug: 'validslug', accessCode: 'ABC' }); // not length:6
+      await getPublicCard({ slug: 'validslug', access_code: 'ABC' });
     } catch (err) {
       error = err;
     }
 
     expect(error).to.not.equal(undefined);
-    expect(error).to.not.equal(null);
   });
 });
