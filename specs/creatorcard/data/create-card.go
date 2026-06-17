@@ -16,6 +16,6 @@ Card {
     }
   }
   status string(draft|published)
-  access_type string(public|private)
+  access_type? string(public|private)
   access_code? string<length:6>
 }
