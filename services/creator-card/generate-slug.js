@@ -1,5 +1,3 @@
-const { ulid } = require('@app-core/randomness');
-
 /**
  * Generates a url-safe kebab-case slug without using regex.
  * @param {string} title
@@ -12,7 +10,7 @@ function generateSlug(title) {
 
   const allowedChars = 'abcdefghijklmnopqrstuvwxyz0123456789 ';
 
-  const cleanTitle = title
+  const slug = title
     .toLowerCase()
     .trim()
     .split('')
@@ -22,9 +20,6 @@ function generateSlug(title) {
     .split(' ')
     .filter((word) => word !== '')
     .join('-');
-
-  const uniqueHash = ulid().toLowerCase().substring(0, 8);
-  const slug = `${cleanTitle}-${uniqueHash}`;
 
   return slug;
 }
