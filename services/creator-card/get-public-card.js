@@ -17,33 +17,46 @@ async function getPublicCard(serviceData) {
 
   try {
     const card = await CreatorCard.findOne({ query: { slug } });
+    // 1. If no card with that slug exists → HTTP 404, error code NF01
     if (!card) {
-      // HTTP 404, error code NF01
       throwAppError(CreatorCardMessages.NOT_FOUND, ERROR_CODE.NOT_FOUND);
     }
 
+    // 2. If the card exists but its status is draft → HTTP 404, error code NF02
     if (card.status === 'draft') {
-      // HTTP 404, error code NF02
       throwAppError(CreatorCardMessages.IS_DRAFT, ERROR_CODE.IS_DRAFT);
     }
 
+    // Check Private Card Constraints
     if (card.access_type === 'private') {
+      // 3. If the card is private and no access_code query parameter was supplied → HTTP 403, error code AC03
       if (!accessCode) {
-        //  HTTP 403, error code AC03
         throwAppError(
           CreatorCardMessages.ACCESS_CODE_REQUIRED_ON_RETRIEVAL,
           ERROR_CODE.ACCESS_CODE_REQUIRED_ON_RETRIEVAL
         );
       }
 
+      // 4. If the card is private and the supplied access_code does not match → HTTP 403, error code AC04
       if (accessCode !== card.access_code) {
-        // HTTP 403, error code AC04
         throwAppError(CreatorCardMessages.INVALID_ACCESS_CODE, ERROR_CODE.INVALID_ACCESS_CODE);
       }
     }
-    result = card;
+
+    // 5. Otherwise → HTTP 200 with the card data
+    // Safe document unpacking avoiding internal loop mutation side-effects
+    const cardObj = card.toObject ? card.toObject() : { ...card };
+
+    const id = cardObj._id.toString();
+    delete cardObj._id;
+    delete cardObj.access_code;
+
+    result = { id, ...cardObj };
   } catch (error) {
-    appLogger.error(error, 'get-public-card-error');
+    console.log(error);
+    console.error(error, 'get-public-card-error');
+    throw error;
+    // throwAppError(CreatorCardMessages.NOT_FOUND, ERROR_CODE.NOT_FOUND);
   }
 
   return result;
