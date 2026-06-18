@@ -60,7 +60,13 @@ async function createCard(serviceData) {
         ERROR_CODE.ACCESS_CODE_NOT_ALLOWED_ON_TYPE_PUBLIC
       );
     }
-    appLogger.info({ validData }, 'create-card-valid-data');
+    if (validData.service_rates) {
+      if (!validData.service_rates.rates.length) {
+        throwAppError(CreatorCardMessages.SERVICE_RATES_EMPTY, ERROR_CODE.VALIDATIONERR);
+      }
+    } else {
+      validData.service_rates = null;
+    }
 
     const card = await CreatorCard.create(validData);
     result = serializeCreatorCard(card, false);

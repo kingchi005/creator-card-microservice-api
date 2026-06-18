@@ -42,14 +42,16 @@ function serializeCreatorCard(document, withTimestamps = true) {
       url: link.url,
     })),
 
-    service_rates: {
-      currency: 'NGN',
-      rates: rawObj.service_rates.rates.map((rate) => ({
-        name: rate.name,
-        description: rate.description,
-        amount: rate.amount,
-      })),
-    },
+    service_rates: rawObj.service_rates
+      ? {
+          currency: rawObj.service_rates.currency,
+          rates: rawObj.service_rates.rates.map((rate) => ({
+            name: rate.name,
+            description: rate.description,
+            amount: rate.amount,
+          })),
+        }
+      : null,
 
     status: rawObj.status,
     access_type: rawObj.access_type,
