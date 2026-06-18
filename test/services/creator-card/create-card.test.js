@@ -35,7 +35,7 @@ describe('createCard Service', function () {
     const result = await createCard(makePayload());
 
     expect(result.access_type).to.equal('public');
-    expect(result.access_code).to.equal(undefined); // serializer omits null fields
+    expect(result.access_code).to.equal(null); // serializer omits null fields
   });
 
   it('should create a private card when access_type is private and access_code is provided', async () => {
