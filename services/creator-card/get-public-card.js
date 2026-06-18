@@ -6,8 +6,8 @@ const { CreatorCardMessages } = require('@app/messages');
 const serializeCreatorCard = require('./serialize-card-data');
 
 const getPublicCardSpec = `root {
-  slug string<minLength:5|maxLength:50>
-  access_code? string<length:6>
+  slug string<trim|lowercase|minLength:5|maxLength:50>
+  access_code? string<trim|length:6>
 }`;
 
 const parsedGetPublicCardSpec = validator.parse(getPublicCardSpec);

@@ -6,8 +6,8 @@ const { CreatorCardMessages } = require('@app/messages');
 const serializeCreatorCard = require('./serialize-card-data');
 
 const deleteCardSpec = `root {
-  slug string<minLength:5|maxLength:50>
-	creator_reference string<length:20>
+  slug string<trim|lowercase|minLength:5|maxLength:50>
+	creator_reference string<trim|length:20>
 }`;
 
 const parsedDeleteCardSpec = validator.parse(deleteCardSpec);
