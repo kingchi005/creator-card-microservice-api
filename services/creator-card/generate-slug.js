@@ -23,11 +23,11 @@ async function generateSlug(title) {
       .filter((word) => word !== '')
       .join('-');
 
-    const uniqueHash = ulid().toLowerCase().substring(0, 8);
     try {
       // ensure the slug is unique
       const existingCard = await CreatorCard.findOne({ query: { slug } });
       if (existingCard) {
+        const uniqueHash = ulid().toLowerCase().substring(0, 8);
         slug = `${slug}-${uniqueHash}`;
       }
     } catch (error) {
