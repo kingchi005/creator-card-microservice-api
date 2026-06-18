@@ -60,7 +60,7 @@ async function createCard(serviceData, options = {}) {
       const alphanumericChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       for (let i = 0; i < validData.access_code.length; i++) {
         if (!alphanumericChars.includes(validData.access_code[i])) {
-          throwAppError(CreatorCardMessages.INVALID_ACCESS_CODE, ERROR_CODE.INVALID_ACCESS_CODE);
+          throwAppError(CreatorCardMessages.INVALID_ACCESS_CODE_CHAR, ERROR_CODE.VALIDATIONERR);
         }
       }
     }

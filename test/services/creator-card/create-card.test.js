@@ -239,6 +239,18 @@ describe('createCard Service', function () {
     expect(error).to.not.equal(undefined);
   });
 
+  it('should throw when access_code contains non-alphanumeric characters', async () => {
+    let error;
+    try {
+      await createCard(makePayload({ access_type: 'private', access_code: 'AB!@#$' }));
+    } catch (err) {
+      error = err;
+    }
+
+    expect(error).to.not.equal(undefined);
+    expect(error.message).to.equal('access_code must be alphanumeric characters');
+  });
+
   it('should throw when access_code is not exactly 6 characters', async () => {
     let error;
     try {

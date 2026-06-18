@@ -7,4 +7,5 @@ module.exports = {
   ACCESS_CODE_REQUIRED_ON_RETRIEVAL: 'This card is private. An access code is required', // AC03
   INVALID_ACCESS_CODE: 'Invalid access code', // AC04
   SERVICE_RATES_EMPTY: 'service_rates.rates cannot be empty', // VALIDATION_ERROR
+  INVALID_ACCESS_CODE_CHAR: 'access_code must be alphanumeric characters',
 };

@@ -160,6 +160,23 @@ describe('Creator Card Solution Tests', function () {
     expect(data.code).to.equal('AC05');
   });
 
+  // ─── Test Case 9b: Non-alphanumeric access_code ────────────────────────────
+
+  it('TC09b - should return 400 when access_code contains non-alphanumeric characters', async () => {
+    const { statusCode, data } = await server.post('/creator-cards', {
+      body: {
+        title: 'Private Card',
+        creator_reference: 'crt_q1w2e3r4t5y6u7i8',
+        status: 'published',
+        access_type: 'private',
+        access_code: 'AB!@#$',
+      },
+    });
+
+    expect(statusCode).to.equal(400);
+    expect(data.message).to.equal('access_code must be alphanumeric characters');
+  });
+
   // ─── Test Case 10: Framework validation failure ────────────────────────────
 
   it('TC10 - should return 400 when status is an invalid value', async () => {

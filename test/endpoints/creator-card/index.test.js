@@ -97,6 +97,15 @@ describe('Creator Card Endpoints', function () {
       expect(statusCode).to.equal(400);
       expect(data.message).to.equal('access_code can only be set on private cards');
     });
+
+    it('should return 400 when access_code contains non-alphanumeric characters', async () => {
+      const { statusCode, data } = await server.post('/creator-cards', {
+        body: makePayload({ access_type: 'private', access_code: 'AB!@#$' }),
+      });
+
+      expect(statusCode).to.equal(400);
+      expect(data.message).to.equal('access_code must be alphanumeric characters');
+    });
   });
 
   // ─── GET /creator-cards/:slug ──────────────────────────────────────────────
