@@ -44,7 +44,7 @@ async function createCard(serviceData) {
       }
     } else {
       // auto-generate one from the title if omitted
-      validData.slug = generateSlug(validData.title);
+      validData.slug = await generateSlug(validData.title);
     }
     if (!validData.access_type) {
       validData.access_type = 'public';
@@ -60,6 +60,7 @@ async function createCard(serviceData) {
         ERROR_CODE.ACCESS_CODE_NOT_ALLOWED_ON_TYPE_PUBLIC
       );
     }
+    appLogger.info({ validData }, 'create-card-valid-data');
 
     const card = await CreatorCard.create(validData);
     result = serializeCreatorCard(card, false);
