@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const { faker } = require('@faker-js/faker');
 const CreatorCard = require('@app/repository/creator-card');
-const deleteCard = require('@app/services/creator-card/delele-card');
+const deleteCard = require('@app/services/creator-card/delete-card');
 
 describe('deleteCard Service', function () {
   this.timeout(10000);

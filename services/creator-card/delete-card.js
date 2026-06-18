@@ -7,12 +7,12 @@ const serializeCreatorCard = require('./serialize-card-data');
 
 const deleteCardSpec = `root {
   slug string<trim|lowercase|minLength:5|maxLength:50>
-	creator_reference string<trim|length:20>
+  creator_reference string<trim|length:20>
 }`;
 
 const parsedDeleteCardSpec = validator.parse(deleteCardSpec);
 
-async function deleteCard(serviceData) {
+async function deleteCard(serviceData, options = {}) {
   const { slug, creator_reference: creatorReference } = validator.validate(
     serviceData,
     parsedDeleteCardSpec
@@ -35,11 +35,10 @@ async function deleteCard(serviceData) {
       updateValues,
     });
 
-    result = serializeCreatorCard({ ...card, ...updateValues });
+    result = serializeCreatorCard({ ...card, ...updateValues }, { includeAccessCode: true });
   } catch (error) {
     appLogger.error(error, 'delete-card-error');
     throw error;
-    // throwAppError(CreatorCardMessages.NOT_FOUND, ERROR_CODE.NOT_FOUND);
   }
 
   return result;

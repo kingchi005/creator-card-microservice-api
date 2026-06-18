@@ -1,38 +1,37 @@
-const { appLogger } = require('@app-core/logger');
-const { ulid } = require('@app-core/randomness');
+const { randomBytes } = require('@app-core/randomness');
 const CreatorCard = require('@app/repository/creator-card');
+const generateRandomAlphanumeric = require('./generate-random-alphanumeric');
 
-/**
- * Generates a url-safe kebab-case slug without using regex.
- * @param {string} title
- * @returns {Promise<string>}
- */
-async function generateSlug(title) {
+async function generateSlug(serviceData, options = {}) {
+  const { title } = serviceData;
+
   let slug = '';
   if (title && typeof title === 'string') {
-    const allowedChars = 'abcdefghijklmnopqrstuvwxyz0123456789 ';
+    const allowedChars = 'abcdefghijklmnopqrstuvwxyz0123456789 -_';
 
     slug = title
       .toLowerCase()
       .trim()
       .split('')
-      .map((char) => (char === '-' ? ' ' : char))
-      .filter((char) => allowedChars.includes(char))
+      .map((char) => (allowedChars.includes(char) ? char : ' '))
       .join('')
       .split(' ')
       .filter((word) => word !== '')
       .join('-');
 
-    try {
-      // ensure the slug is unique
+    let needsSuffix = false;
+    if (slug.length < 5) {
+      needsSuffix = true;
+    } else {
       const existingCard = await CreatorCard.findOne({ query: { slug } });
       if (existingCard) {
-        const uniqueHash = ulid().toLowerCase().substring(0, 8);
-        slug = `${slug}-${uniqueHash}`;
+        needsSuffix = true;
       }
-    } catch (error) {
-      appLogger.error('Error generating slug:', error);
-      throw error;
+    }
+
+    if (needsSuffix) {
+      const suffix = generateRandomAlphanumeric({ length: 6 });
+      slug = `${slug.length > 0 ? slug : 'card'}-${suffix}`;
     }
   }
   return slug;
