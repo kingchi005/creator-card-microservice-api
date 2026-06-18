@@ -36,7 +36,7 @@ GetPublicCardRequest { // Retrieves a single Creator Card by its slug
 			access_type public
 			created number
 			updated number
-			deleted? number
+			deleted? null
 		}
 	}
  

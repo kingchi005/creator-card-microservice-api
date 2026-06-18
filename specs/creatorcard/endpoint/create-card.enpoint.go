@@ -52,10 +52,10 @@ GetCreatorCardsRequest { // Retrieves a single Creator Card by its slug
 			}
 			status published
 			access_type public
-			access_code? null
+			access_code? string<length:6>
 			created number
 			updated number
-			deleted? number
+			deleted? null
 		}
 	}
  

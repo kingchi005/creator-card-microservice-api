@@ -47,6 +47,7 @@ async function getPublicCard(serviceData) {
       }
     }
 
+    card.access_code = undefined;
     result = serializeCreatorCard(card);
   } catch (error) {
     appLogger.error(error, 'get-public-card-error');

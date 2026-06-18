@@ -28,12 +28,14 @@ async function deleteCard(serviceData) {
       throwAppError(CreatorCardMessages.NOT_FOUND, ERROR_CODE.NOT_FOUND);
     }
 
+    const updateValues = { deleted: Date.now() };
+
     await CreatorCard.updateOne({
       query: { slug, creator_reference: creatorReference },
-      updateValues: { deleted: Date.now() },
+      updateValues,
     });
 
-    result = serializeCreatorCard(card);
+    result = serializeCreatorCard({ ...card, ...updateValues });
   } catch (error) {
     appLogger.error(error, 'delete-card-error');
     throw error;

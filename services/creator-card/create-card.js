@@ -69,7 +69,7 @@ async function createCard(serviceData) {
     }
 
     const card = await CreatorCard.create(validData);
-    result = serializeCreatorCard(card, false);
+    result = serializeCreatorCard(card);
   } catch (error) {
     appLogger.error(error, 'create-card-error');
     throw error;
