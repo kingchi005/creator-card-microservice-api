@@ -122,6 +122,7 @@ describe('Creator Card Solution Tests', function () {
 
     expect(statusCode).to.equal(400);
     expect(data.message).to.equal('Slug is already taken');
+    expect(data.code).to.equal('SL02');
   });
 
   // ─── Test Case 8: Missing access_code on private card ─────────────────────
@@ -138,6 +139,7 @@ describe('Creator Card Solution Tests', function () {
 
     expect(statusCode).to.equal(400);
     expect(data.message).to.equal('access_code is required when access_type is private');
+    expect(data.code).to.equal('AC01');
   });
 
   // ─── Test Case 9: access_code on a public card ────────────────────────────
@@ -155,6 +157,7 @@ describe('Creator Card Solution Tests', function () {
 
     expect(statusCode).to.equal(400);
     expect(data.message).to.equal('access_code can only be set on private cards');
+    expect(data.code).to.equal('AC05');
   });
 
   // ─── Test Case 10: Framework validation failure ────────────────────────────
@@ -178,6 +181,7 @@ describe('Creator Card Solution Tests', function () {
 
     expect(statusCode).to.equal(404);
     expect(data.message).to.equal('Creator card not found');
+    expect(data.code).to.equal('NF01');
   });
 
   // ─── Test Case 12: Retrieve a draft card ──────────────────────────────────
@@ -197,6 +201,7 @@ describe('Creator Card Solution Tests', function () {
 
     expect(statusCode).to.equal(404);
     expect(data.message).to.equal('Creator card not found');
+    expect(data.code).to.equal('NF02');
   });
 
   // ─── Test Case 13: Retrieve private card without access_code ──────────────
@@ -210,6 +215,7 @@ describe('Creator Card Solution Tests', function () {
 
     expect(statusCode).to.equal(403);
     expect(data.message).to.equal('This card is private. An access code is required');
+    expect(data.code).to.equal('AC03');
   });
 
   // ─── Test Case 14: Retrieve private card with wrong access_code ───────────
@@ -225,6 +231,7 @@ describe('Creator Card Solution Tests', function () {
 
     expect(statusCode).to.equal(403);
     expect(data.message).to.equal('Invalid access code');
+    expect(data.code).to.equal('AC04');
   });
 
   // ─── Test Case 15: Delete a non-existent card ─────────────────────────────
@@ -236,6 +243,7 @@ describe('Creator Card Solution Tests', function () {
 
     expect(statusCode).to.equal(404);
     expect(data.message).to.equal('Creator card not found');
+    expect(data.code).to.equal('NF01');
   });
 
   // ─── Test Case 16: Retrieve a deleted card ────────────────────────────────
@@ -249,5 +257,6 @@ describe('Creator Card Solution Tests', function () {
 
     expect(statusCode).to.equal(404);
     expect(data.message).to.equal('Creator card not found');
+    expect(data.code).to.equal('NF01');
   });
 });
